@@ -134,7 +134,7 @@ class GameState:
         return self.generateSuccessor( 0, action )
 
     def getPacmanState( self ):
-        """
+        """+
         Returns an AgentState object for pacman (in game.py)
 
         state.pos gives the current position
