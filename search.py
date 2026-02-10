@@ -12,14 +12,19 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
+
+
 """
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
+
 import util
 from game import Directions
 from typing import List
+
+
 
 
 class SearchProblem:
@@ -27,8 +32,10 @@ class SearchProblem:
     This class outlines the structure of a search problem, but doesn't implement
     any of the methods (in object-oriented terminology: an abstract class).
 
+
     You do not need to change anything in this class, ever.
     """
+
 
     def getStartState(self):
         """
@@ -36,17 +43,21 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
+
     def isGoalState(self, state):
         """
           state: Search state
+
 
         Returns True if and only if the state is a valid goal state.
         """
         util.raiseNotDefined()
 
+
     def getSuccessors(self, state):
         """
           state: Search state
+
 
         For a given state, this should return a list of triples, (successor,
         action, stepCost), where 'successor' is a successor to the current
@@ -55,14 +66,18 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
+
     def getCostOfActions(self, actions):
         """
          actions: A list of actions to take
+
 
         This method returns the total cost of a particular sequence of actions.
         The sequence must be composed of legal moves.
         """
         util.raiseNotDefined()
+
+
 
 
 def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
@@ -84,13 +99,16 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     frontier = util.Stack()
     frontier.push((problem.getStartState(),[]))
 
+
     visited = set()
+
 
     while not frontier.isEmpty():
         current_state, actions = frontier.pop()
-    
+   
         if problem.isGoalState(current_state):
             return actions
+
 
         if current_state not in visited:
             visited.add(current_state)
@@ -101,8 +119,10 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
+
     return []
     util.raiseNotDefined()
+
 
  #   util.raiseNotDefined()
 
@@ -113,13 +133,16 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     frontier = util.Queue()
     frontier.push((problem.getStartState(),[]))
 
+
     visited = set()
+
 
     while not frontier.isEmpty():
         current_state, actions = frontier.pop()
-    
+   
         if problem.isGoalState(current_state):
             return actions
+
 
         if current_state not in visited:
             visited.add(current_state)
@@ -127,14 +150,49 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
                 new_actions = actions + [action]
                 frontier.push((successor, new_actions))
 
+
     return []
- #   util.raiseNotDefined()
+    util.raiseNotDefined()
+
+
+  #  util.raiseNotDefined()
+
+
 
 
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()
+    frontier.push((problem.getStartState(), []), 0)
+
+
+    visited = set()
+   
+    while not frontier.isEmpty():
+        current_state, actions = frontier.pop()
+   
+        if problem.isGoalState(current_state):
+            return actions
+
+
+        if current_state not in visited:
+            visited.add(current_state)
+            for successor, action, stepCost in problem.getSuccessors(current_state):
+                if successor not in visited:
+                    new_actions= actions + [action]
+                    new_cost = problem.getCostOfActions(new_actions)
+                    frontier.push((successor, new_actions), new_cost)
+
+
+    return []
+
+
+  #  util.raiseNotDefined()
+
+
+
+
 
 
 def nullHeuristic(state, problem=None) -> float:
@@ -145,10 +203,46 @@ def nullHeuristic(state, problem=None) -> float:
     return 0
 
 
+
+
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directions]:
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()
+    bestG_cost = {problem.getStartState():0}
+    frontier.push((problem.getStartState(), [], 0), heuristic(problem.getStartState(), problem))
+
+
+    while not frontier.isEmpty():
+        current_state, actions, current_G = frontier.pop()
+   
+        if problem.isGoalState(current_state):
+            return actions
+
+
+       # current_G= problem.getCostOfActions(actions)
+
+
+        if current_G<=bestG_cost.get(current_state, float('inf')):
+            for successor, action, stepCost in problem.getSuccessors(current_state):
+                new_actions= actions + [action]
+                new_cost = current_G + stepCost
+                if new_cost<bestG_cost.get(successor, float('inf')):
+                        bestG_cost[successor] = new_cost
+                        f_n = new_cost + heuristic(successor, problem)
+                        frontier.push((successor, new_actions, new_cost), f_n)
+
+
+    return []
+#   util.raiseNotDefined()
+
+
+
+
+
+
+
+
 
 
 # Abbreviations
@@ -156,3 +250,5 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+
+
