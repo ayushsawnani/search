@@ -552,7 +552,6 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state
     "*** YOUR CODE HERE ***"
     """
     A heuristic for the CornersProblem that you defined.
@@ -569,20 +568,17 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
 
     "*** YOUR CODE HERE ***"
     position, foodGrid = state
-    x, y = position
+    foodList = foodGrid.asList()
 
-    maxDistance = 0
-    unvisited = []
-    for i in range(len(foodGrid.asList())):  # type: ignore
-        if foodGrid[foodGrid.asList()[i][0]][foodGrid.asList()[i][1]]:  # type: ignore
-            unvisited.append(foodGrid.asList()[i])  # type: ignore
+    if not foodList:
+        return 0
 
-    for i in range(len(unvisited)):
-        food = unvisited[i]
-        distance = util.manhattanDistance(position, food)  # type: ignore
-        maxDistance = max(distance, maxDistance)
+    # Calculate the actual maze distance to every remaining dot
+    # The heuristic value is the distance to the furthest dot
+    distances = [mazeDistance(position, food, problem.startingGameState) for food in foodList]
+    
+    return max(distances)
 
-    return maxDistance
 
 
 class ClosestDotSearchAgent(SearchAgent):
