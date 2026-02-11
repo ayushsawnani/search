@@ -554,7 +554,35 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    """
+    A heuristic for the CornersProblem that you defined.
+
+      state:   The current search state
+               (a data structure you chose in your search problem)
+
+      problem: The CornersProblem instance for this layout.
+
+    This function should always return a number that is a lower bound on the
+    shortest path from the state to a goal of the problem; i.e.  it should be
+    admissible.
+    """
+
+    "*** YOUR CODE HERE ***"
+    position, foodGrid = state
+    x, y = position
+
+    maxDistance = 0
+    unvisited = []
+    for i in range(len(foodGrid.asList())):  # type: ignore
+        if foodGrid[foodGrid.asList()[i][0]][foodGrid.asList()[i][1]]:  # type: ignore
+            unvisited.append(foodGrid.asList()[i])  # type: ignore
+
+    for i in range(len(unvisited)):
+        food = unvisited[i]
+        distance = util.manhattanDistance(position, food)  # type: ignore
+        maxDistance = max(distance, maxDistance)
+
+    return maxDistance
 
 
 class ClosestDotSearchAgent(SearchAgent):
